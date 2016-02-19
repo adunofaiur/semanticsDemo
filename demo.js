@@ -23,7 +23,9 @@ function onLoad(){
 		-MICE.render: the prefered rendering function. IE: it's what will be called after BigSemantics finishes extracting
 					  metadata and mmd. You can supply your own for fun and profit!
 		-options: you can set some additional parameters here. The big one is options.callback, 
-					which you can use to set, well, an additional callback
+					which you can use if for some reason you need access to the metadata and meta-metadata
+
+					If what you really want is access to that sweet MetadataViewModel, see the "Custom Rendering" demo
 	*/
 	var container = document.getElementById('containerPrime');
 	var url = "http://www.amazon.com/gp/product/B00MRHANNI";
@@ -34,8 +36,18 @@ function onLoad(){
 
 
 }
+/*
+	In a callback passed through via options, you are given access to metadata and the meta-metadata.
+	You can probably ignore the meta-metadata.
+*/
+function swizzIt(metadataAndMetametaData){
+	//To make metadata easier to use via js, first unwrap it (it's initially wrapped for cross-compatibility with C#)
+	var unwrappedMetadata = BSUtils.unwrap(metadataAndMetametaData.metadata);
+	//using unwrapped metadata is super easy and all the cool kids do it
+	var textOutput = "And it's only " + unwrappedMetadata.price + "! (ps - a callback made me)";
+	var textNode = document.createTextNode(textOutput);
+	var textHold = document.getElementById('priceOutput');
+	textHold.appendChild(textNode)
 
-function swizzIt(arg1, arg2){
-	console.log(arg1);
-	
+
 }
