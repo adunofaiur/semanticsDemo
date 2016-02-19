@@ -9,9 +9,12 @@
 	 */
 
 var bsService = new BSAutoSwitch(['elkanacmmmdgbnhdjopfdeafchmhecbf', 'gdgmmfgjalcpnakohgcfflgccamjoipd ']);
-//This is a flag that disables some mumbo-jump in RendererBase. Use false if you paln on using a cusotm renderer
-idealRenderer = false;
-function onLoad(){
+
+
+/*
+Called on the rendering demo page
+*/
+function onLoadRendering(){
 
 
 	/*
@@ -44,10 +47,85 @@ function swizzIt(metadataAndMetametaData){
 	//To make metadata easier to use via js, first unwrap it (it's initially wrapped for cross-compatibility with C#)
 	var unwrappedMetadata = BSUtils.unwrap(metadataAndMetametaData.metadata);
 	//using unwrapped metadata is super easy and all the cool kids do it
-	var textOutput = "And it's only " + unwrappedMetadata.price + "! (ps - a callback made me)";
-	var textNode = document.createTextNode(textOutput);
-	var textHold = document.getElementById('priceOutput');
-	textHold.appendChild(textNode)
+		//never trust metadata! Like file I/O you should wrap it try catch statements
+	try{
+		var textOutput = "And it's only " + unwrappedMetadata.price + "! (ps - a callback made me)";
+		var textNode = document.createTextNode(textOutput);
+		var textHold = document.getElementById('priceOutput');
+		textHold.appendChild(textNode)
+
+	}catch(e){
+		var textOutput = "no price found (ps - a callback made me)";
+		var textNode = document.createTextNode(textOutput);
+		var textHold = document.getElementById('priceOutput');
+		textHold.appendChild(textNode)
+
+	}
 
 
+
+}
+
+/*
+Called on the data-only page
+*/
+function onLoadSemantics(){
+	/*
+	Let's break down the arguments.
+		-url: the URL you want metadata for
+		-options: If you already have meta-metadata, you can pass it in here so prevent double extraction. 
+		-callback: your function that will asynchronously recieve metadata
+	*/
+
+	var options = {};
+	var url = "https://www.youtube.com/watch?v=EVBsypHzF3U";
+	var callback = gagaOhLala;
+	bsService.loadMetadata(url, options, callback);
+}
+
+// Ignore this. I just use it to make numbers slightly prettier -- visciously copy-pasted from stack overflow:
+// http://stackoverflow.com/questions/2901102/how-to-print-a-number-with-commas-as-thousands-separators-in-javascript
+
+function numberWithCommas(x) {
+    return x.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
+//The first argument passed to callback is an error message. in this case its null <3
+
+function gagaOhLala(err, metadataAndMetametaData){
+
+
+
+	//To make metadata easier to use via js, first unwrap it (it's initially wrapped for cross-compatibility with C#)
+	var unwrappedMetadata = BSUtils.unwrap(metadataAndMetametaData.metadata);
+	//Before using the data, i kill off my loading indicator
+	$('.loadingGifOfDoom').remove();
+
+	//we create a node to hold the linked image
+	//never trust metadata! Like file I/O you should wrap it try catch statements
+	try{
+		var youtubeThumbnail = document.createElement('img');
+		youtubeThumbnail.className = "youtubeThumbnail"
+		youtubeThumbnail.src = unwrappedMetadata.pic;		
+		//This lovely BSUtils function takes a machete to special characters.
+		var neatlyFormattedViewCount = BSUtils.removeLineBreaksAndCrazies(unwrappedMetadata.number_of_views);
+		numberWithCommas(neatlyFormattedViewCount);
+		var textOutput = "Viewed over " + neatlyFormattedViewCount + " times!";
+		var textNode = document.createTextNode(textOutput);
+		
+		var imageCont = document.getElementById('imageCont');
+		imageCont.appendChild(youtubeThumbnail);
+		var viewCont = document.getElementById('viewCont');
+		viewCont.appendChild(textNode);
+
+
+
+
+	}catch(e){
+		var textOutput = "the youtube wrapper is experiencing problems, sorry :(";
+		var textNode = document.createTextNode(textOutput);
+		var textHold = document.getElementById('priceOutput');
+		textHold.appendChild(textNode)
+
+	}
 }
