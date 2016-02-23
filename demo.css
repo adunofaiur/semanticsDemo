@@ -44,6 +44,10 @@ h1{
 
 .youtubeThumbnail{
 	max-width: 500px;
+
+}
+.youtubeThumbnail:hover{
+	cursor: pointer;
 }
 #youtubeOutput{
 	display: flex;

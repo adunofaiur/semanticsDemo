@@ -31,7 +31,8 @@ function onLoadRendering(){
 					If what you really want is access to that sweet MetadataViewModel, see the "Custom Rendering" demo
 	*/
 	var container = document.getElementById('containerPrime');
-	var url = "http://www.amazon.com/gp/product/B00MRHANNI";
+
+	var url = $("#containerPrime").attr('url');
 	var options = {};
 	options.callback = swizzIt;
 
@@ -78,8 +79,8 @@ function onLoadSemantics(){
 	*/
 
 	var options = {};
-	var url = "https://www.youtube.com/watch?v=EVBsypHzF3U";
-	var callback = gagaOhLala;
+	var url = $("#youtubeOutput").attr('url');
+	var callback = gagaOohLala;
 	bsService.loadMetadata(url, options, callback);
 }
 
@@ -92,7 +93,7 @@ function numberWithCommas(x) {
 
 //The first argument passed to callback is an error message. in this case its null <3
 
-function gagaOhLala(err, metadataAndMetametaData){
+function gagaOohLala(err, metadataAndMetametaData){
 
 
 
@@ -115,6 +116,11 @@ function gagaOhLala(err, metadataAndMetametaData){
 		
 		var imageCont = document.getElementById('imageCont');
 		imageCont.appendChild(youtubeThumbnail);
+		imageCont.addEventListener('click',function(){
+			var locationWithTime = unwrappedMetadata.location + "&t=7m2s";
+			window.open(locationWithTime,'_blank');
+
+		})
 		var viewCont = document.getElementById('viewCont');
 		viewCont.appendChild(textNode);
 
